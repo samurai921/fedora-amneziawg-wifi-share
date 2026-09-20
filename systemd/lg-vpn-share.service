@@ -1,0 +1,12 @@
+[Unit]
+Description=Share AmneziaWG VPN to LG WiFi
+Requires=docker.service
+After=docker.service NetworkManager.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/lg-vpn-share.sh
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
