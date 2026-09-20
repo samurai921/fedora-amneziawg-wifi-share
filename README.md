@@ -186,11 +186,8 @@ ipv4.method:                shared
 10.42.0.1/24
 ```
 
-а телефон — адрес из той же подсети:
-
-```text
-10.42.0.0/24
-```
+а телефон получил адрес из той же подсети `10.42.0.0/24`,
+который выдал DHCP-сервер NetworkManager.
 
 ---
 
@@ -310,16 +307,18 @@ sudo /usr/local/sbin/lg-vpn-share.sh
 sudo iptables -L DOCKER-USER -n -v
 ```
 
-Ожидаются два разрешающих правила:
+Ожидаются два разрешающих правила — сначала трафик из Wi-Fi в VPN,
+затем ответный:
 
 ```text
-ACCEPT  wlp8s0f3u4u4 -> amn0
-        source: 10.42.0.0/24
-
-ACCEPT  amn0 -> wlp8s0f3u4u4
-        destination: 10.42.0.0/24
-        state: RELATED,ESTABLISHED
+Chain DOCKER-USER (1 references)
+ pkts bytes target  prot opt in            out           source        destination
+    0     0 ACCEPT  all  --  wlp8s0f3u4u4  amn0          10.42.0.0/24  0.0.0.0/0
+    0     0 ACCEPT  all  --  amn0          wlp8s0f3u4u4  0.0.0.0/0     10.42.0.0/24  ctstate RELATED,ESTABLISHED
 ```
+
+Счётчики `pkts` и `bytes` в начале будут нулевыми и вырастут,
+когда через точку доступа пойдёт трафик.
 
 Именно эти направления были проверены на нашем компьютере.
 
